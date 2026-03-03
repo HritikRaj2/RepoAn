@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# Sensitive config - never commit this!
+src/main/resources/application.properties
