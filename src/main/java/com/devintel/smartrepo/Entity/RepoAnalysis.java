@@ -5,6 +5,7 @@ import lombok.*;
 
 @Entity
 @Data
+@Table(name = "repo_analysis")
 @NoArgsConstructor
 @AllArgsConstructor
 public class RepoAnalysis {
@@ -21,7 +22,12 @@ public class RepoAnalysis {
 
     private Integer healthScore;
 
-    private Integer riskLevel;
+    @Enumerated(EnumType.STRING)
+    private RiskLevel riskLevel;
+
+    public enum RiskLevel {
+        LOW, MEDIUM, HIGH
+    }
 
     @Column(columnDefinition = "TEXT")
     private String aiSummary;
