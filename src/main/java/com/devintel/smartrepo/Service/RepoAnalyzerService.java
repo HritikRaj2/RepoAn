@@ -25,6 +25,7 @@ public class RepoAnalyzerService {
     private final GitHubService gitHubService;
     private final FileParserService fileParserService;
     private final CommitService commitService;
+    private final OpenAiService openAiService;
     private final RepoAnalysisRepository repoAnalysisRepository;
     private final FileRiskRepository fileRiskRepository;
     private final CommitQualityRepository commitQualityRepository;
@@ -53,7 +54,7 @@ public class RepoAnalyzerService {
             List<FileRisk> fileRisks = analyzeFiles(owner, repo, analysis);
             log.info("📁 Analyzed {} files", fileRisks.size());
 
-            // ── Step 4: Analyze commits ──────────────────────────────
+            // ── Step 4: Analyze commits ────────────────��─────────────
             CommitQuality commitQuality = analyzeCommitQuality(owner, repo, analysis);
             log.info("📊 Commit quality score: {}", commitQuality.getQuality_score());
 
@@ -61,9 +62,14 @@ public class RepoAnalyzerService {
             int healthScore = calculateHealthScore(fileRisks, commitQuality);
             RepoAnalysis.RiskLevel riskLevel = determineOverallRisk(healthScore);
 
-            // ── Step 6: Update and save final result ─────────────────
+            // ── Step 6: Generate AI Summary ──────────────────────────
+            String aiSummary = generateAiSummary(healthScore, riskLevel, fileRisks, commitQuality);
+            log.info("🤖 AI Summary generated");
+
+            // ── Step 7: Update and save final result ─────────────────
             analysis.setHealthScore(healthScore);
             analysis.setRiskLevel(riskLevel);
+            analysis.setAiSummary(aiSummary);
             analysis = repoAnalysisRepository.save(analysis);
 
             log.info("✅ Analysis complete! Health: {}, Risk: {}", healthScore, riskLevel);
@@ -75,7 +81,7 @@ public class RepoAnalyzerService {
         }
     }
 
-    // ─── ANALYZE ALL SOURCE FILES ────────────────────────────��───────────
+    // ─── ANALYZE ALL SOURCE FILES ────────────────────────────────────────
     private List<FileRisk> analyzeFiles(String owner, String repo, RepoAnalysis analysis) {
 
         List<JsonNode> sourceFiles = gitHubService.getSourceFiles(owner, repo);
@@ -170,5 +176,20 @@ public class RepoAnalyzerService {
         if (healthScore >= 70) return RepoAnalysis.RiskLevel.LOW;
         if (healthScore >= 40) return RepoAnalysis.RiskLevel.MEDIUM;
         return RepoAnalysis.RiskLevel.HIGH;
+    }
+
+    // ─── GENERATE AI SUMMARY ─────────────────────────────────────────────
+    private String generateAiSummary(int healthScore, RepoAnalysis.RiskLevel riskLevel,
+                                     List<FileRisk> fileRisks, CommitQuality commitQuality) {
+
+        // Count total security smells
+        int totalSecuritySmells = 0;
+        for (FileRisk fr : fileRisks) {
+            totalSecuritySmells += (fr.getSecurity_smells() != null ? fr.getSecurity_smells() : 0);
+        }
+
+        return openAiService.generateDetailedReview(
+                healthScore, riskLevel.name(), fileRisks, commitQuality, totalSecuritySmells
+        );
     }
 }
