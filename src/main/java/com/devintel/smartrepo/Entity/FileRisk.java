@@ -4,6 +4,7 @@ package com.devintel.smartrepo.Entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,7 +22,7 @@ public class FileRisk {
 
     @ManyToOne
     @JoinColumn(name = "analysis_id", nullable = false)
-    private com.devintel.smartrepo.entity.RepoAnalysis analysis;
+    private com.devintel.smartrepo.Entity.RepoAnalysis analysis;
 
     @Column(nullable = false)
     private String file_path;

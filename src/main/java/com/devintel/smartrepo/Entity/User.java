@@ -1,4 +1,4 @@
-package com.devintel.smartrepo.entity;
+package com.devintel.smartrepo.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;

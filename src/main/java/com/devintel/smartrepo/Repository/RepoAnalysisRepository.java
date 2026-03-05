@@ -1,8 +1,8 @@
 package com.devintel.smartrepo.Repository;
 
-import com.devintel.smartrepo.entity.RepoAnalysis;
+import com.devintel.smartrepo.Entity.RepoAnalysis;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.devintel.smartrepo.entity.User;
+import com.devintel.smartrepo.Entity.User;
 
 import java.util.List;
 import java.util.Optional;
