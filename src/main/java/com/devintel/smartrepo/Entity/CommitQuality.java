@@ -20,11 +20,13 @@ public class CommitQuality {
 
     @OneToOne
     @JoinColumn(name = "analysis_id" , nullable = false)
-    private com.devintel.smartrepo.entity.RepoAnalysis analysis;
+    private com.devintel.smartrepo.Entity.RepoAnalysis analysis;
 
     private Integer total_commits;
 
     private Integer good_messages;
+
+    private Integer bad_messages;
 
     private Integer avg_commit_size;
 

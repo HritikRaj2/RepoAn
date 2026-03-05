@@ -1,4 +1,4 @@
-package com.devintel.smartrepo.entity;
+package com.devintel.smartrepo.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +16,7 @@ public class RepoAnalysis {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private com.devintel.smartrepo.entity.User user;
+    private com.devintel.smartrepo.Entity.User user;
 
     private String repoUrl;
 
