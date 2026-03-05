@@ -26,10 +26,11 @@ public class SecurityConfig {
         http
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()      // ← PUBLIC (register + login)
-                        .requestMatchers("/swagger-ui/**").permitAll()    // ← Swagger UI
-                        .requestMatchers("/v3/api-docs/**").permitAll()   // ← OpenAPI docs
-                        .requestMatchers("/api/**").authenticated()       // ← Everything else needs JWT
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/public/**").permitAll()    // ← ADD THIS LINE
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(new jwtValidator(), BasicAuthenticationFilter.class)
@@ -48,7 +49,9 @@ public class SecurityConfig {
                 cfg.setAllowedOrigins(Arrays.asList(
                         "http://localhost:3000",
                         "http://localhost:8081",
-                        "https://gdg-blog.onrender.com"
+                        "http://localhost:5173",         // Vite React default port
+                        "https://gdg-blog.onrender.com",
+                        "https://smartrepo.onrender.com"
                 ));
                 cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 cfg.setAllowCredentials(true);

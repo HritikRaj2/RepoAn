@@ -15,7 +15,7 @@ public class RepoAnalysis {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = true)    // ← CHANGED: nullable = true
     private com.devintel.smartrepo.Entity.User user;
 
     private String repoUrl;
