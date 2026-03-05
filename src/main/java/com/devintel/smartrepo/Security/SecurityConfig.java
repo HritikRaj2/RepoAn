@@ -26,7 +26,10 @@ public class SecurityConfig {
         http
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/api/auth/**").permitAll()      // ← PUBLIC (register + login)
+                        .requestMatchers("/swagger-ui/**").permitAll()    // ← Swagger UI
+                        .requestMatchers("/v3/api-docs/**").permitAll()   // ← OpenAPI docs
+                        .requestMatchers("/api/**").authenticated()       // ← Everything else needs JWT
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(new jwtValidator(), BasicAuthenticationFilter.class)
@@ -44,7 +47,8 @@ public class SecurityConfig {
                 CorsConfiguration cfg = new CorsConfiguration();
                 cfg.setAllowedOrigins(Arrays.asList(
                         "http://localhost:3000",
-                        "https://gdg-blog.onrender.com"  // Add your frontend Render URL here
+                        "http://localhost:8081",
+                        "https://gdg-blog.onrender.com"
                 ));
                 cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 cfg.setAllowCredentials(true);

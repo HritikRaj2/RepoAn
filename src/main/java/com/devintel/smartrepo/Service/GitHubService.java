@@ -30,7 +30,11 @@ public class GitHubService {
     public GitHubService(@Value("${github.token:}") String githubToken) {
         WebClient.Builder builder = WebClient.builder()
                 .baseUrl("https://api.github.com")
-                .defaultHeader("Accept", "application/vnd.github+json");
+                .defaultHeader("Accept", "application/vnd.github+json")
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(10 * 1024 * 1024)  // 10 MB buffer limit
+                );
 
         if (githubToken != null && !githubToken.isEmpty()) {
             builder.defaultHeader("Authorization", "Bearer " + githubToken);
